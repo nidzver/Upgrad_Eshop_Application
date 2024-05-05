@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardActions, Button, Typography, MenuItem, FormControl, Select } from '@material-ui/core';
+import { Card, CardContent, CardActions, Button, Typography } from '@material-ui/core';
 import { Edit, Delete } from '@material-ui/icons';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 import { useNavigate } from 'react-router-dom';
 
-const AddProductPage = ({ isLoggedIn, isAdmin }) => {
+const ProductsPage = ({ isLoggedIn, isAdmin }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [products, setProducts] = useState([]);
-  const [sortBy, setSortBy] = useState('default'); // Default sorting option
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,11 +31,7 @@ const AddProductPage = ({ isLoggedIn, isAdmin }) => {
 
   const fetchProducts = async () => {
     try {
-      let url = `/products?category=${selectedCategory}`;
-      if (sortBy !== 'default') {
-        url += `&sortBy=${sortBy}`;
-      }
-      const response = await fetch(url);
+      const response = await fetch(`/products?category=${selectedCategory}`);
       if (response.ok) {
         const data = await response.json();
         setProducts(data.products);
@@ -49,24 +44,13 @@ const AddProductPage = ({ isLoggedIn, isAdmin }) => {
   };
 
   useEffect(() => {
-    // Fetch products when selected category or sorting option changes
+    // Fetch products when selected category changes
     fetchProducts();
-  }, [selectedCategory, sortBy]);
-
-  useEffect(() => {
-    // Redirect to login page if not logged in and trying to access protected routes
-    if (!isLoggedIn && isAdmin) {
-      navigate.push('/login');
-    }
-  }, [isLoggedIn, isAdmin, navigate]);
-
-  const handleSortChange = (event) => {
-    setSortBy(event.target.value);
-  };
+  }, [selectedCategory]);
 
   const handleProductClick = (productId) => {
     // Navigate to the product details page with the specific product ID
-    navigate.push(`/product/${productId}`);
+    navigate(`/product/${productId}`);
   };
 
   return (
@@ -77,21 +61,6 @@ const AddProductPage = ({ isLoggedIn, isAdmin }) => {
           <ToggleButton key={category} value={category}>{category}</ToggleButton>
         ))}
       </ToggleButtonGroup>
-
-      {/* Sort By Dropdown */}
-      <FormControl style={{ marginLeft: '20px' }}>
-        <Select
-          value={sortBy}
-          onChange={handleSortChange}
-          displayEmpty
-          inputProps={{ 'aria-label': 'Sort By' }}
-        >
-          <MenuItem value="default">Default</MenuItem>
-          <MenuItem value="price_high_to_low">Price High to Low</MenuItem>
-          <MenuItem value="price_low_to_high">Price Low to High</MenuItem>
-          <MenuItem value="newest">Newest</MenuItem>
-        </Select>
-      </FormControl>
 
       {/* Product Cards */}
       {products.map(product => (
@@ -118,4 +87,4 @@ const AddProductPage = ({ isLoggedIn, isAdmin }) => {
   );
 };
 
-export default AddProductPage;
+export default ProductDeatilsPage;

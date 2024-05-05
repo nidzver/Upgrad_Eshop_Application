@@ -1,12 +1,14 @@
 import React from 'react';
 import { AppBar, Toolbar, IconButton, Typography, Button, InputBase } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart } from '@material-ui/icons';
 
 const NavigationBar = ({ isLoggedIn }) => {
+  const navigate = useNavigate();
   const handleLogout = () => {
     // Implement logout functionality and redirect to home page
     // You can handle logout logic here
+    navigate('/');
   };
 
   return (
