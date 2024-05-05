@@ -23,7 +23,7 @@ const NavigationBar = ({ isLoggedIn }) => {
             <InputBase placeholder="Search…" style={{ color: 'white' }} />
             <Button color="inherit" component={Link} to="/">Home</Button>
             <Button color="inherit" component={Link} to="/add-products">Add Products</Button>
-            <Button color="inherit" onClick={handleLogout}>
+            <Button color="inherit" onClick={handleLogout} style={{ color: 'red' }}>
               Logout
             </Button>
           </>
