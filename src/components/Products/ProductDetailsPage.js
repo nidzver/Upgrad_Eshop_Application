@@ -4,7 +4,7 @@ import { Edit, Delete } from '@material-ui/icons';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 import { useNavigate } from 'react-router-dom';
 
-const ProductsPage = ({ isLoggedIn, isAdmin }) => {
+const ProductDetailsPage = ({ isLoggedIn, isAdmin }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [products, setProducts] = useState([]);
@@ -48,9 +48,14 @@ const ProductsPage = ({ isLoggedIn, isAdmin }) => {
     fetchProducts();
   }, [selectedCategory]);
 
-  const handleProductClick = (productId) => {
-    // Navigate to the product details page with the specific product ID
-    navigate(`/product/${productId}`);
+  const handleProductClick = (productId, isPlaceOrder) => {
+    if (isPlaceOrder) {
+      // Redirect to the Create Orders page
+      navigate('/create-order');
+    } else {
+      // Navigate to the product details page with the specific product ID
+      navigate(`/product/${productId}`);
+    }
   };
 
   return (
@@ -78,7 +83,7 @@ const ProductsPage = ({ isLoggedIn, isAdmin }) => {
                 <Button startIcon={<Delete />} color="secondary">Delete</Button>
               </>
             ) : (
-              <Button color="primary">Buy</Button>
+              <Button color="primary" onClick={() => handleProductClick(product.id, true)}>Place Order</Button>
             )}
           </CardActions>
         </Card>
@@ -87,4 +92,4 @@ const ProductsPage = ({ isLoggedIn, isAdmin }) => {
   );
 };
 
-export default ProductDeatilsPage;
+export default ProductDetailsPage;
