@@ -7,8 +7,8 @@ import SignupPage from './components/SignUp/SignupPage';
 import AddProductsPage from './components/Products/AddProductsPage';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Default to false
-  const [isAdmin, setIsAdmin] = useState(false ); // Default to false
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Default to false
+  const [isAdmin, setIsAdmin] = useState(false); // Default to false
 
   return (
     <Router>

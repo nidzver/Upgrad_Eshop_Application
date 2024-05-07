@@ -1,119 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardActions, Button, Typography, MenuItem, FormControl, Select } from '@material-ui/core';
-import { Edit, Delete } from '@material-ui/icons';
-import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
+import React, { useState } from 'react';
+import { Typography, TextField, Button, Box } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 
-const AddProductPage = ({ isLoggedIn, isAdmin }) => {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('ALL');
-  const [products, setProducts] = useState([]);
-  const [sortBy, setSortBy] = useState('default'); // Default sorting option
+const AddProductPage = ({ isLoggedIn, isAdmin, productToModify }) => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch product categories
-    fetchCategories();
-  }, []);
+  // State for form fields
+  const [name, setName] = useState('');
+  const [category, setCategory] = useState('');
+  const [manufacturer, setManufacturer] = useState('');
+  const [availableItems, setAvailableItems] = useState('');
+  const [price, setPrice] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [description, setDescription] = useState('');
 
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('/products/categories');
-      if (response.ok) {
-        const data = await response.json();
-        setCategories(data.categories);
-      } else {
-        console.error('Failed to fetch categories:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Failed to fetch categories:', error);
+  // Function to handle form submission
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Logic to add or modify the product
+    // Assuming successful addition/modification for demonstration
+    // You should implement actual addition/modification logic here
+    if (productToModify) {
+      console.log('Product modified successfully:', { name, category, manufacturer, availableItems, price, imageUrl, description });
+    } else {
+      console.log('Product added successfully:', { name, category, manufacturer, availableItems, price, imageUrl, description });
     }
-  };
-
-  const fetchProducts = async () => {
-    try {
-      let url = `/products?category=${selectedCategory}`;
-      if (sortBy !== 'default') {
-        url += `&sortBy=${sortBy}`;
-      }
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data.products);
-      } else {
-        console.error('Failed to fetch products:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Failed to fetch products:', error);
-    }
-  };
-
-  useEffect(() => {
-    // Fetch products when selected category or sorting option changes
-    fetchProducts();
-  }, [selectedCategory, sortBy]);
-
-  useEffect(() => {
-    // Redirect to login page if not logged in and trying to access protected routes
-    if (!isLoggedIn && isAdmin) {
-      navigate.push('/login');
-    }
-  }, [isLoggedIn, isAdmin, navigate]);
-
-  const handleSortChange = (event) => {
-    setSortBy(event.target.value);
-  };
-
-  const handleProductClick = (productId) => {
-    // Navigate to the product details page with the specific product ID
-    navigate.push(`/product/${productId}`);
+    // Redirect to product details page or any other desired page after addition/modification
+    navigate('/products');
   };
 
   return (
-    <div>
-      {/* Product Category Tabs */}
-      <ToggleButtonGroup value={selectedCategory} exclusive onChange={(event, newCategory) => setSelectedCategory(newCategory)}>
-        {categories.map(category => (
-          <ToggleButton key={category} value={category}>{category}</ToggleButton>
-        ))}
-      </ToggleButtonGroup>
-
-      {/* Sort By Dropdown */}
-      <FormControl style={{ marginLeft: '20px' }}>
-        <Select
-          value={sortBy}
-          onChange={handleSortChange}
-          displayEmpty
-          inputProps={{ 'aria-label': 'Sort By' }}
-        >
-          <MenuItem value="default">Default</MenuItem>
-          <MenuItem value="price_high_to_low">Price High to Low</MenuItem>
-          <MenuItem value="price_low_to_high">Price Low to High</MenuItem>
-          <MenuItem value="newest">Newest</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Product Cards */}
-      {products.map(product => (
-        <Card key={product.id} onClick={() => handleProductClick(product.id)} style={{ cursor: 'pointer', marginBottom: 20 }}>
-          <img src={product.image} alt={product.name} style={{ width: '100%', height: 'auto' }} />
-          <CardContent>
-            <Typography variant="h5">{product.name}</Typography>
-            <Typography>{product.description}</Typography>
-            <Typography>Price: ${product.price}</Typography>
-          </CardContent>
-          <CardActions>
-            {isAdmin ? (
-              <>
-                <Button startIcon={<Edit />} color="primary">Edit</Button>
-                <Button startIcon={<Delete />} color="secondary">Delete</Button>
-              </>
-            ) : (
-              <Button color="primary">Buy</Button>
-            )}
-          </CardActions>
-        </Card>
-      ))}
+    <div style={{ margin: 'auto', width: '50%', textAlign: 'center', paddingTop: '50px' }}>
+      <Typography variant="h5">{productToModify ? 'Modify Product' : 'Add Product'}</Typography>
+      <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
+        <Box display="flex" flexDirection="column">
+          {/* Form fields */}
+          <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} required variant="outlined" margin="normal" />
+          <div><TextField label="Category" value={category} onChange={(e) => setCategory(e.target.value)} required variant="outlined" margin="normal" /></div>
+          <div><TextField label="Available Items" value={availableItems} onChange={(e) => setAvailableItems(e.target.value)} required variant="outlined" margin="normal" /></div>
+          <div><TextField label="Price" value={price} onChange={(e) => setPrice(e.target.value)} required variant="outlined" margin="normal" /></div>
+         <div> <TextField label="Image URL" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} variant="outlined" margin="normal" /></div>
+          <div><TextField label="Description" value={description} onChange={(e) => setDescription(e.target.value)}  variant="outlined" margin="normal" /></div>
+          {/* Submit button */}
+          <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>{productToModify ? 'Modify Product' : 'Save Product'}</Button>
+        </Box>
+      </form>
     </div>
   );
 };
